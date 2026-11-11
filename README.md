@@ -10,7 +10,7 @@ Extelligencing gives the agents you already use a structured professional contex
 
 It is not another assistant, and it does not replace your agent. It is not a pile of static prompts, and it is not an excuse to remember everything. It is plain Markdown and JSON files plus a small Node.js helper with no dependencies. There is no account, no server and no telemetry.
 
-> **Status: v0.1.0-beta.1, the first public beta.**
+> **Status: beta (version 0.1.0-beta.1).**
 > **Kiro** is the primary integration, with limited live validation on macOS. **Codex** and **Claude Code** integrations exist but are **experimental and unverified in live sessions**. Claude Desktop is not supported. Read [what has and has not been verified](docs/KIRO-VALIDATION.md) before relying on any of it.
 
 ## Less explaining. More getting somewhere.
@@ -141,8 +141,8 @@ x context route --task drafting --topic "weekly status update"
 
 # A proposal that is rejected leaves nothing behind
 x evidence propose --json '{"kind":"hypothesis","summary":"Prefers decisions before meetings","instances":["one planning session"]}'
-x evidence list
-x evidence reject <the id printed above>
+x evidence list                    # the first column is the proposal id
+x evidence reject "$(x evidence list --status proposed | awk 'NR==1 {print $1}')"
 ls .extelligencing/evidence        # proposals only, no log.md
 
 # Remove the demo
@@ -168,12 +168,14 @@ A dedicated personal workspace is the simplest setup. If you install into a repo
 
 ### Uninstall
 
+Run one of these two commands. They are alternatives, not steps:
+
 ```bash
 node bin/extelligencing.mjs uninstall --target ~/extelligencing-workspace --yes               # keeps your personal data
 node bin/extelligencing.mjs uninstall --target ~/extelligencing-workspace --yes --purge-data  # also removes .extelligencing/
 ```
 
-Only files that still match what was installed are removed. Files you edited are kept and reported.
+Only files that still match what was installed are removed. Files you edited are kept and reported. If you already ran the first command and now want your personal data gone too, delete the `.extelligencing/` folder yourself.
 
 ## Limitations
 

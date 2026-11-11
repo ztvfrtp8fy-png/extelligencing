@@ -30,45 +30,60 @@ These are GitHub settings, not code.
 
 ## Publication sequence (requires authorization)
 
+Run in bash or zsh, step by step. Steps 1 to 3 happen while the repository is still private.
+
 ```bash
 cd ~/dev/extelligencing
+R=ztvfrtp8fy-png/extelligencing
 
-# 1. Push the branch (repository is still private)
+# 0. Preconditions: clean tree, private, no releases, tests and checks pass
+git status --short                       # must print nothing
+gh repo view $R --json visibility -q .visibility    # must print PRIVATE
+npm test && node scripts/release-check.mjs --denylist ~/dev/extelligencing-release-review/denylist.txt
+
+# 1. Push the branch
 git push origin main
 
 # 2. Verify the pushed content from a clean clone
-git clone https://github.com/OWNER/REPO.git /tmp/extelligencing-verify && (cd /tmp/extelligencing-verify && npm test && git log --format='%h %an %s')
+git clone https://github.com/$R.git /tmp/extelligencing-verify && (cd /tmp/extelligencing-verify && npm test && git log --format='%h %an %s' -3)
 
-# 3. Tag and push the tag (still private)
+# 3. Create and push the annotated tag (still private)
 git tag -a v0.1.0-beta.1 -m "Extelligencing v0.1.0-beta.1"
 git push origin v0.1.0-beta.1
 
-# 4+5. Make the repository public and enable private vulnerability reporting in the same breath.
-#      The release (step 6) must not be created unless this prints "PVR enabled".
-R=OWNER/REPO
-gh repo edit $R --visibility public --accept-visibility-change-consequences \
-  && gh api -X PUT repos/$R/private-vulnerability-reporting \
-  && test "$(gh api repos/$R/private-vulnerability-reporting --jq .enabled)" = true \
-  && echo "PVR enabled"
-# If the PUT fails, retry once after a few seconds. If it still fails, enable it in the web UI
-# (Settings -> Advanced Security) and re-run the GET above.
-#
-# If "PVR enabled" cannot be confirmed within a few minutes, ROLL BACK TO PRIVATE. Do not create the release:
-#   gh repo edit $R --visibility private --accept-visibility-change-consequences
-#   gh repo view $R --json visibility -q .visibility     # must print PRIVATE
-gh repo edit $R --enable-discussions
+# 4. Make the repository public and enable private vulnerability reporting (PVR).
+#    If PVR cannot be confirmed as enabled, this rolls the repository back to private and fails.
+go_public() {
+  gh repo edit "$R" --visibility public --accept-visibility-change-consequences || return 1
+  for attempt in 1 2 3; do
+    if gh api -X PUT "repos/$R/private-vulnerability-reporting" \
+       && [ "$(gh api "repos/$R/private-vulnerability-reporting" --jq .enabled)" = true ]; then
+      echo "PVR enabled"
+      return 0
+    fi
+    sleep 5
+  done
+  echo "PVR could not be confirmed: rolling back to private" >&2
+  gh repo edit "$R" --visibility private --accept-visibility-change-consequences
+  gh repo view "$R" --json visibility -q .visibility      # must print PRIVATE
+  return 1
+}
 
-# 6. Publish the release as a pre-release
-gh release create v0.1.0-beta.1 --prerelease --verify-tag \
-  --title "Extelligencing v0.1.0-beta.1" \
-  --notes-file docs/RELEASE-NOTES-0.1.0-beta.1.md
+# 5-6. Only if step 4 succeeded: enable Discussions, then publish the pre-release.
+go_public \
+  && gh repo edit "$R" --enable-discussions \
+  && gh release create v0.1.0-beta.1 --prerelease --verify-tag \
+       --title "Extelligencing v0.1.0-beta.1" \
+       --notes-file docs/RELEASE-NOTES-0.1.0-beta.1.md
 ```
 
 Do not run step 4 before the checklist is complete: once public, assume anything pushed has been copied.
 
+If `go_public` fails after the repository became public, check that the last line printed `PRIVATE` before doing anything else. If the `PUT` keeps failing, enable the feature in the web interface (Settings, Advanced Security, Private vulnerability reporting) and check `gh api repos/$R/private-vulnerability-reporting --jq .enabled` before retrying from step 4.
+
 ## If private vulnerability reporting cannot be enabled
 
-Do not create the release. Return the repository to private right away (command in step 4+5), confirm it prints `PRIVATE`, and investigate. Rolling back is safe because nothing else has been published at that point (no release, no npm package), but note that the repository was briefly public: forks, clones and stars made in that window are not undone, and the `v0.1.0-beta.1` tag, already pushed in step 3, stays in the repository. That is acceptable because the tag contains only content already reviewed for publication. Retry the sequence from step 4 when the cause is understood. `SECURITY.md` meanwhile still offers a working channel (a detail-free issue asking for a private contact), because issues stay enabled.
+Do not create the release. Return the repository to private right away (the rollback in step 4 does this), confirm it prints `PRIVATE`, and investigate. Rolling back is safe because nothing else has been published at that point (no release, no npm package), but note that the repository was briefly public: forks, clones and stars made in that window are not undone, and the `v0.1.0-beta.1` tag, already pushed in step 3, stays in the repository. That is acceptable because the tag contains only content already reviewed for publication. Retry from step 4 when the cause is understood. `SECURITY.md` meanwhile still offers a working channel (a detail-free issue asking for a private contact), because issues stay enabled.
 
 ## If sensitive material is found
 
@@ -79,7 +94,7 @@ Do not create the release. Return the repository to private right away (command 
 
 **After the repository is public:**
 1. Treat the material as exposed. If it is a credential, revoke and rotate it first.
-2. Make the repository private again: `gh repo edit OWNER/REPO --visibility private --accept-visibility-change-consequences` (forks and clones already made are not affected).
+2. Make the repository private again: `gh repo edit ztvfrtp8fy-png/extelligencing --visibility private --accept-visibility-change-consequences` (forks and clones already made are not affected).
 3. Remove the release and tag: `gh release delete v0.1.0-beta.1 --cleanup-tag --yes`.
 4. Rewrite history to remove the material, force-push, and ask GitHub Support to purge cached views and orphaned references if needed.
 5. Assess who may have accessed it and notify them if personal data was involved. Then re-run the checklist and republish under a new tag.

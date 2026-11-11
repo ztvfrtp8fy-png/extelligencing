@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0-beta.1 (release candidate; date set at publication)
+## 0.1.0-beta.1
 
 First public beta of Extelligencing. Licensed under Apache-2.0.
 

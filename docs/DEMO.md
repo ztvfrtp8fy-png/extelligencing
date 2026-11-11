@@ -29,8 +29,8 @@ x context route --task shared --topic "architecture" --conflicts   # --conflicts
 
 # 6. A proposal that is rejected leaves no trace
 x evidence propose --json '{"kind":"hypothesis","summary":"Prefers decisions before meetings","instances":["one planning session"]}'
-x evidence list                             # shows the proposal id
-x evidence reject <the id printed above> --reason "not accurate"
+x evidence list                             # the first column is the proposal id
+x evidence reject "$(x evidence list --status proposed | awk 'NR==1 {print $1}')" --reason "not accurate"
 ls .extelligencing/evidence                 # proposals only; no log.md
 
 # 7. Clean up
