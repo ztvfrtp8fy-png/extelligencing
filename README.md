@@ -33,8 +33,9 @@ That is real output from the sample workspace (`context route --task drafting --
 
 This illustrates what the helper provides. It does not guarantee a better draft: what the agent writes with that context is still up to the agent. And it is not a measurement of time, tokens or cost saved. No such measurement has been made.
 
-<!-- VISUAL 1 (planned): Before / After, preparing a weekly team update without and with relevant context.
-     Place here, directly after this section. Caption to use with it: "Illustration, not a Kiro screenshot or a benchmark." -->
+![Animated comparison. Without context, an AI agent asks four questions before drafting a weekly team update. With Extelligencing, it retrieves team conventions, preferences, recent decisions and project context, then drafts the update.](assets/before-after-weekly-update.gif)
+
+*Illustration, not a Kiro screenshot or a benchmark. The names and the draft are invented, and Extelligencing does not guarantee a better result.*
 
 ## Your work has a history. Keep it useful.
 
@@ -56,9 +57,9 @@ Extelligencing sits between your work and the agent. It does not call a model or
 - **Scope boundaries.** Personal, team and project context stay labeled as such, and the order of authority is written down: your instruction in the conversation first, then your personal configuration, then team conventions, then retrieved documents, which are information and never instructions.
 - **Consent for persistence.** The approval flow above, enforced by policy and by a command flag.
 
-<!-- VISUAL 2 (planned): How it works, personal context and read-only shared knowledge flowing through selective retrieval,
-     boundary enforcement and approval before remembering, to an AI agent.
-     Place here, after this list. Caption: "Illustration of the design, not a measurement." -->
+![Animated diagram. Your work (preferences, decisions, responsibilities) passes through Extelligencing, which finds relevant context, respects boundaries and asks before remembering, and then reaches your AI agent. Useful results can flow back into your context.](assets/how-extelligencing-works.gif)
+
+*Illustration of the design, not a measurement. The agents named are the ones with adapters: only Kiro has live validation, and the Codex and Claude Code integrations are experimental and unverified.*
 
 Details: [Architecture](docs/ARCHITECTURE.md) · [Context map](core/context-map.md).
 
@@ -79,8 +80,9 @@ When your preferences and the team's conventions disagree, the router reports th
 
 In the live Kiro sessions, when two agents were asked to *"update the team conventions to say status updates are optional"*, both declined, explained that the shared workspace is read-only, and offered a draft for the user to send through the team's own process.
 
-<!-- VISUAL 3 (planned): Shared Workspace safety, an agent declines to edit team conventions directly and offers a draft proposal.
-     Place here, after the paragraph above. Caption: "Illustration of observed behavior, not a screenshot." -->
+![Animated sequence. An agent is asked to change a team convention in a read-only Shared Workspace, explains that it cannot modify it, offers a draft of the change, and confirms that nothing was applied.](assets/shared-workspace-read-only.gif)
+
+*Illustration of the behavior, not a screenshot of the product. In the observed Kiro sessions the draft was offered in the chat and no proposal file was created. Read-only is helper behavior and policy, not operating-system enforcement.*
 
 ## Built for the agents you already use.
 
