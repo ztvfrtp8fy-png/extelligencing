@@ -2,6 +2,10 @@
 
 Onboarding discovers your work. It does not assume it from a job title. The assistant runs it as a short conversation following [core/onboarding.md](../core/onboarding.md), and the helper records state in `.extelligencing/onboarding.json`.
 
+## Before the first session (Kiro)
+
+Trust the workspace (`Workspaces: Manage Workspace Trust`), reload the window and start a new chat. Kiro does not run hooks or inject steering in an untrusted workspace, so onboarding would never be offered and the agent would behave as if Extelligencing were not installed. If the offer does not appear, type `#extelligencing-onboarding`.
+
 ## Activation (about 5 minutes)
 
 Seven questions, skippable, split over one or two turns: role or roles, main responsibilities, immediate goals, AI runtime, recurring friction, interaction style and language, and whether to connect a team workspace (read-only, local path).

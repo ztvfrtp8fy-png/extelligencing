@@ -58,7 +58,7 @@ Not deterministic and not testable statically: whether a live model obeys the ke
 ## Design decisions
 
 - **Markdown and JSON, no database.** Everything is inspectable and editable by the person.
-- **Command hook over agent hook.** The session-start check is a small script, so it costs no model call and prints nothing when there is nothing to say. If the hook cannot run, `#extelligencing-onboarding` works as a manual fallback.
+- **Command hook over agent hook.** The session-start check is a small script, so it costs no model call and prints nothing when there is nothing to say. Kiro runs hooks only in trusted workspaces. If the hook cannot run, `#extelligencing-onboarding` works as a manual fallback.
 - **Kernel always-on, everything else on demand.** Steering inclusion is `auto` or `manual` for all other policy files, to keep default context small.
 - **Runtime-neutral references.** Policies are identified by name (`collaboration`); each adapter maps names to its own paths.
 - **No Git or network code.** Shared workspaces are paths. Authentication stays with the user's Git tooling.

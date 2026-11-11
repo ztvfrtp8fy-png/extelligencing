@@ -6,7 +6,7 @@ Direction, not promises. Priorities follow feedback and evidence (see [docs/PRIO
 Core policies, onboarding, personal profile, selective context, evidence approval, read-only shared workspace, Kiro adapter, experimental Codex and Claude Code adapters.
 
 ## Next candidates (not committed)
-1. **Verify live runtimes.** Run the runtime test protocol on Kiro (fresh and existing setups), Codex and Claude Code; promote or demote adapters honestly.
+1. **Verify more live paths.** Kiro has been observed in a small number of sessions; still unobserved are installing over an existing setup, the interactive onboarding interview, agent-driven persistence of an approved entry and uninstall. Run the runtime test protocol on Codex and Claude Code; promote or demote adapters honestly.
 2. **Proposed shared-context updates.** Generate a local diff against the shared workspace for a recurring issue, for human review. No automatic publishing.
 3. **Git provider helpers.** Branch and pull request creation for GitHub, GitLab and Bitbucket, using the user's own authentication.
 4. **Contribute improvements upstream.** A reviewed, sanitized path for turning a generic improvement into an issue or PR against Extelligencing.

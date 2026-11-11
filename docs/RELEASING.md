@@ -51,7 +51,11 @@ gh repo edit $R --visibility public --accept-visibility-change-consequences \
   && test "$(gh api repos/$R/private-vulnerability-reporting --jq .enabled)" = true \
   && echo "PVR enabled"
 # If the PUT fails, retry once after a few seconds. If it still fails, enable it in the web UI
-# (Settings -> Advanced Security) and re-run the GET above before continuing.
+# (Settings -> Advanced Security) and re-run the GET above.
+#
+# If "PVR enabled" cannot be confirmed within a few minutes, ROLL BACK TO PRIVATE. Do not create the release:
+#   gh repo edit $R --visibility private --accept-visibility-change-consequences
+#   gh repo view $R --json visibility -q .visibility     # must print PRIVATE
 gh repo edit $R --enable-discussions
 
 # 6. Publish the release as a pre-release
@@ -61,6 +65,10 @@ gh release create v0.1.0-beta.1 --prerelease --verify-tag \
 ```
 
 Do not run step 4 before the checklist is complete: once public, assume anything pushed has been copied.
+
+## If private vulnerability reporting cannot be enabled
+
+Do not create the release. Return the repository to private right away (command in step 4+5), confirm it prints `PRIVATE`, and investigate. Rolling back is safe because nothing else has been published at that point (no release, no npm package), but note that the repository was briefly public: forks, clones and stars made in that window are not undone, and the `v0.1.0-beta.1` tag, already pushed in step 3, stays in the repository. That is acceptable because the tag contains only content already reviewed for publication. Retry the sequence from step 4 when the cause is understood. `SECURITY.md` meanwhile still offers a working channel (a detail-free issue asking for a private contact), because issues stay enabled.
 
 ## If sensitive material is found
 

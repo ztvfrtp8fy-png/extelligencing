@@ -1,35 +1,44 @@
 # Demo (about 3 minutes, synthetic data)
 
-Everything here uses the fictional "Orbit" team in `examples/team-workspace/`.
+Everything here uses the fictional "Orbit" team in `examples/team-workspace/` and a throwaway folder. Nothing touches a real workspace. Run it from the root of the cloned repository, in bash or zsh.
 
 ```bash
 # 1. Install into a throwaway folder
+REPO=$(pwd)
 node bin/extelligencing.mjs init --target /tmp/extelligencing-demo --runtime kiro --yes
 cd /tmp/extelligencing-demo
+x() { node .extelligencing/runtime/bin/extelligencing.mjs "$@"; }
 
-# 2. First session-start check (this is what the hook runs)
-node .extelligencing/runtime/bin/extelligencing.mjs boot
+# 2. The session-start check, which is what the Kiro hook runs.
+#    Onboarding has not been done, so it prints the instruction the agent receives.
+x boot
 
-# 3. Activation as a squad lead who writes in Portuguese, with the team workspace attached
-sed "s#__SHARED_PATH__#$OLDPWD/examples/team-workspace#" "$OLDPWD/examples/personas/squad-lead.json" > /tmp/lead.json
-node .extelligencing/runtime/bin/extelligencing.mjs onboarding activate --file /tmp/lead.json
+# 3. Activate as a fictional squad lead who writes in Portuguese, with the sample team connected read-only
+sed "s#__SHARED_PATH__#$REPO/examples/team-workspace#" "$REPO/examples/personas/squad-lead.json" > lead.json
+x onboarding activate --file lead.json
 
 # 4. Later sessions stay quiet
-node .extelligencing/runtime/bin/extelligencing.mjs boot       # prints nothing
+x boot                                      # prints nothing
 
-# 5. Smallest sufficient context for a task
-node .extelligencing/runtime/bin/extelligencing.mjs context route --task quick
-node .extelligencing/runtime/bin/extelligencing.mjs context route --task shared --topic architecture
-node .extelligencing/runtime/bin/extelligencing.mjs context route --task drafting
-#   -> shows the preference/convention conflict on output_language (pt-BR vs en)
+# 5. The smallest sufficient context for a task
+x context route --task quick                # nothing beyond the kernel
+x context route --task shared --topic "notifications asynchronous"
+x context route --task drafting --topic "weekly status update"
+#   -> status-updates.md with its matching line, plus the output_language conflict (pt-BR vs en)
+x context route --task shared --topic "architecture" --conflicts   # --conflicts lists every conflict on request
 
 # 6. A proposal that is rejected leaves no trace
-node .extelligencing/runtime/bin/extelligencing.mjs evidence propose --json '{"kind":"hypothesis","summary":"Prefers decisions before meetings","instances":["one planning session"]}'
-node .extelligencing/runtime/bin/extelligencing.mjs evidence reject ev-$(date +%Y%m%d)-001 --reason "not accurate"
-ls .extelligencing/evidence      # proposals only; no log.md
+x evidence propose --json '{"kind":"hypothesis","summary":"Prefers decisions before meetings","instances":["one planning session"]}'
+x evidence list                             # shows the proposal id
+x evidence reject <the id printed above> --reason "not accurate"
+ls .extelligencing/evidence                 # proposals only; no log.md
 
 # 7. Clean up
-node .extelligencing/runtime/bin/extelligencing.mjs uninstall --yes --purge-data
+x uninstall --yes --purge-data
 ```
 
-What to notice: step 5 lists a handful of files, each labeled by scope and source; the conflict is reported rather than silently resolved; nothing is written to the team folder at any point.
+What to notice:
+
+- Step 5 returns a handful of documents, each labeled by scope and source, with only the matching lines. Topics are matched by words, so `"weekly status update"` finds the status-update convention even though no file is named that.
+- The language conflict is shown while drafting a team deliverable, and a personal *interaction* preference (how the agent talks to you) would not be raised on its own.
+- Nothing is written to the team folder at any point, and the rejected proposal is never persisted.
