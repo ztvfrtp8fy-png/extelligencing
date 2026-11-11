@@ -275,3 +275,17 @@ test('uninstall does not delete through a symlink that now points outside', () =
   assert.match(out, /kept\s+\.kiro\/steering\/extelligencing-kernel\.md.*symbolic link/);
   assert.deepEqual(listFilesRec(outside).sort(), before, 'files outside the workspace were not touched');
 });
+
+test('post-install message is honest about maturity and mentions workspace trust', () => {
+  const kiro = tmp();
+  const out = ok(kiro, ['init', '--runtime', 'kiro', '--yes']);
+  assert.match(out, /primary integration \(observed in a small number of live sessions/);
+  assert.doesNotMatch(out, /Runtime status: supported/);
+  assert.match(out, /TRUST the workspace/);
+  const codex = tmp();
+  const out2 = ok(codex, ['init', '--runtime', 'codex', '--yes']);
+  assert.match(out2, /experimental/);
+  assert.match(out2, /unverified in live sessions/);
+  const claude = tmp();
+  assert.match(ok(claude, ['init', '--runtime', 'claude-code', '--yes']), /experimental/);
+});
