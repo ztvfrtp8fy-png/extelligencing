@@ -17,13 +17,13 @@ Before publishing:
 - [ ] Fresh clone: `npm test`, then `init --yes` into an empty folder, `doctor`, `uninstall --yes`.
 - [ ] `LICENSE` is the unmodified Apache-2.0 text; `NOTICE` and `package.json` agree.
 - [ ] README, `docs/KIRO-VALIDATION.md` and `docs/RUNTIME-MATRIX.md` match what was actually observed.
-- [ ] Repository settings (below) are done, and private vulnerability reporting is **verified enabled**, not assumed.
+- [ ] Private vulnerability reporting is **verified enabled** right after the repository becomes public, and before the release is created (it cannot be enabled while the repository is private; see below).
 
 ## Repository settings (manual, owner)
 
-These are GitHub settings, not code. Enable them before or right after making the repository public:
+These are GitHub settings, not code.
 
-1. **Private vulnerability reporting**: Settings → Code security → Private vulnerability reporting. `SECURITY.md` and `CODE_OF_CONDUCT.md` point reporters there. Verify with `gh api repos/OWNER/REPO/private-vulnerability-reporting` returning `{"enabled":true}`.
+1. **Private vulnerability reporting**: GitHub offers it for **public** repositories only. While this repository is private, the API answers 404 to both reading and enabling it (checked 2026-11-11 with admin rights; GitHub's documentation describes the feature for owners and administrators of public repositories). So it can only be enabled **immediately after** the repository is made public: Settings → Advanced Security → Private vulnerability reporting → Enable, or the command in step 5 below. `SECURITY.md` and `CODE_OF_CONDUCT.md` point reporters to it, and tell them to open a detail-free issue asking for a private channel if the button is not shown, so the short window before it is enabled still has a working channel (Issues are enabled).
 2. **Discussions**: Settings → General → Features. The issue-template chooser links to Discussions.
 3. **Default branch** `main`. Optional protection (no force-push or deletion; unavailable for private repositories on the free plan).
 4. **Topics and description**, optional.
@@ -43,13 +43,16 @@ git clone https://github.com/OWNER/REPO.git /tmp/extelligencing-verify && (cd /t
 git tag -a v0.1.0-beta.1 -m "Extelligencing v0.1.0-beta.1"
 git push origin v0.1.0-beta.1
 
-# 4. Make the repository public
-gh repo edit OWNER/REPO --visibility public --accept-visibility-change-consequences
-
-# 5. Enable Discussions and private vulnerability reporting, then verify (see above)
-gh repo edit OWNER/REPO --enable-discussions
-gh api -X PUT repos/OWNER/REPO/private-vulnerability-reporting
-gh api repos/OWNER/REPO/private-vulnerability-reporting
+# 4+5. Make the repository public and enable private vulnerability reporting in the same breath.
+#      The release (step 6) must not be created unless this prints "PVR enabled".
+R=OWNER/REPO
+gh repo edit $R --visibility public --accept-visibility-change-consequences \
+  && gh api -X PUT repos/$R/private-vulnerability-reporting \
+  && test "$(gh api repos/$R/private-vulnerability-reporting --jq .enabled)" = true \
+  && echo "PVR enabled"
+# If the PUT fails, retry once after a few seconds. If it still fails, enable it in the web UI
+# (Settings -> Advanced Security) and re-run the GET above before continuing.
+gh repo edit $R --enable-discussions
 
 # 6. Publish the release as a pre-release
 gh release create v0.1.0-beta.1 --prerelease --verify-tag \
