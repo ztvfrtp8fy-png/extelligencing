@@ -1,6 +1,6 @@
 # Known Limitations (0.1 beta)
 
-- **Live verification is limited.** Generated files and the helper are tested automatically (85 tests). Kiro has been observed in a small number of live sessions on macOS; Codex and Claude Code have not been observed at all. See the [matrix](RUNTIME-MATRIX.md) and [KIRO-VALIDATION.md](KIRO-VALIDATION.md).
+- **Live verification is limited.** Generated files and the helper are tested automatically (86 tests). Kiro has been observed in a small number of live sessions on macOS; Codex and Claude Code have not been observed at all. See the [matrix](RUNTIME-MATRIX.md) and [KIRO-VALIDATION.md](KIRO-VALIDATION.md).
 - **The Kiro hook is unconfirmed in real sessions.** Kiro's documentation says command hooks run in the project root, and the hook command is a relative path, so it fails (silently, from the model's point of view) if Kiro uses another directory. Stdout injection and trusted-workspace behavior also need confirmation. Fallback: `#extelligencing-onboarding`. See [KIRO-VALIDATION.md](KIRO-VALIDATION.md).
 - **Approval is enforced by a flag and by policy, not by a sandbox.** See [SECURITY.md](../SECURITY.md).
 - **Requires Node.js 18+** on the machine for the helper. Without it, the policies still load but the hook, routing and evidence commands do not run.

@@ -37,7 +37,7 @@ Open the folder in Kiro, **trust the workspace**, reload the window and start a 
 
 ## What was verified
 
-- 85 automated tests pass.
+- 86 automated tests pass.
 - In real Kiro sessions with synthetic data: the session-start hook ran and its output reached the model, the kernel was injected, onboarding deferral was persisted and respected, shared lookups used the router instead of recursive searches, a read-only shared workspace was not written to and edit requests were refused, a declined memory was not saved, and two personas did not open each other's files.
 - Details, sample sizes and what was **not** observed: `docs/KIRO-VALIDATION.md`.
 

@@ -131,7 +131,7 @@ The helper stores only the path, refuses `..` traversal and symbolic links that 
 npm test
 ```
 
-85 automated tests cover the helper and the generated files. They do not show how a live model behaves; that is what the [Kiro validation](docs/KIRO-VALIDATION.md) records, with its limits.
+86 automated tests cover the helper and the generated files. They do not show how a live model behaves; that is what the [Kiro validation](docs/KIRO-VALIDATION.md) records, with its limits.
 
 ## Contribute and give feedback
 

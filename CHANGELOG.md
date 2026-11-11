@@ -13,7 +13,7 @@ First public beta of Extelligencing. Licensed under Apache-2.0.
 - Experimental Codex (`AGENTS.md`) and Claude Code (`CLAUDE.md`) adapters.
 - Synthetic examples (three personas, a fictional multidisciplinary team workspace) and optional product templates.
 - Validation tooling for live Kiro sessions: `init --trace`, `trace show`, `scripts/kiro-validation-setup.mjs`, `scripts/kiro-validation-check.mjs`.
-- 85 automated tests, a release hygiene check (`npm run check:release`), and contribution, security and conduct documents.
+- 86 automated tests, a release hygiene check (`npm run check:release`), and contribution, security and conduct documents.
 
 ### Changed after the first live Kiro sessions
 - `context route --topic` matches words in file names, titles and text (all words first, then any word, labeled partial) and returns only the best matching lines, so shared lookups need not search the whole shared workspace.

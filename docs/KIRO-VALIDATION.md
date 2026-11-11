@@ -10,7 +10,7 @@ It is a small, informal validation, not a study. It does not support any claim a
 
 ## 1. Automated tests
 
-85 tests pass on the release-preparation commit (80 passed on the implementation that was validated live). Run them with `npm test`.
+86 tests pass on the release-preparation commit (80 passed on the implementation that was validated live). Run them with `npm test`.
 
 They cover: install plan, idempotency, upgrade, rollback with fault injection, uninstall, refusal to write through symbolic links, onboarding state transitions and boot decisions, context routing and topic search, preference conflict reporting, shared-workspace path safety and read-only behavior (the shared folder's hash is compared before and after every operation), evidence proposal validation and the approval gate, Codex and Claude Code file generation, and repository hygiene checks.
 
