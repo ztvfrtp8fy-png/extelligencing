@@ -135,7 +135,7 @@ test('interaction-scope conflicts favor the personal preference', () => {
   const shared = sharedCopy();
   activate(root, 'product-owner'); // style: direct; team says guided
   ok(root, ['workspace', 'connect', shared, '--name', 'orbit']);
-  const r = JSON.parse(ok(root, ['context', 'route', '--task', 'drafting', '--json']));
+  const r = JSON.parse(ok(root, ['context', 'route', '--task', 'drafting', '--conflicts', '--json']));
   const c = r.conflicts.find((x) => x.key === 'style');
   assert.equal(c.scope, 'interaction');
   assert.equal(c.suggested, 'personal');

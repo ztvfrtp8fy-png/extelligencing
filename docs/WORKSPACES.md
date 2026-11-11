@@ -38,9 +38,11 @@ decisions/*.md       shared decisions
 
 ## Using it
 
-`context route --task shared|drafting|decision [--topic WORD]` returns up to 5 matching documents, each labeled with its workspace and path, plus anything missing. The assistant names the source when it relies on one.
+`context route --task shared|drafting|decision [--topic WORDS]` returns up to 5 matching documents, each labeled with its workspace and path, plus anything missing. The assistant names the source when it relies on one.
 
-Selection is by folder, file name and title. There is no semantic search in 0.1.
+With `--topic`, matching is a plain word match, in two steps: documents whose path or title contains the topic or whose text contains **all** its words; only if there are none, documents containing **any** word, labeled as partial. Each match carries at most two matching lines (160 characters each), so a factual question can often be answered without opening anything and without reading unrelated documents. There is no index and no semantic search in 0.1.
+
+If nothing matches, the helper says so. Only then should the assistant search the shared folder directly (read-only), listing file names first.
 
 ## Conflicts
 
@@ -52,7 +54,7 @@ For each key that appears in both your `preferences.json` and the team's `conven
 | `artifact` (how a team deliverable is produced) | Team convention |
 | Scopes differ | Ask |
 
-The conflict is always shown, and your explicit instruction wins.
+A conflict is never hidden from you if you ask (`context route --task drafting --conflicts`). It is raised on its own only when it affects the work at hand: for drafting, conflicts on team deliverables (`artifact`). A personal `interaction` preference simply applies. Your explicit instruction always wins.
 
 ## Isolation guarantees
 

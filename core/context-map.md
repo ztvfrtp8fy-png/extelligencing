@@ -15,6 +15,17 @@ You can ask the helper for the exact files: `node .extelligencing/runtime/bin/ex
 | Evidence or memory change | `evidence` | `evidence` policy, `.extelligencing/evidence/proposals` | Templates |
 | More onboarding | `onboarding` | `onboarding` protocol, `.extelligencing/onboarding.json` | Everything else |
 
+## Finding something in shared context
+
+1. Start targeted: `context route --task shared --topic "<key words of the question>"`. It returns the matching documents with the matching lines, which is often enough to answer.
+2. Open only the listed documents, best first, and only if the excerpt is not enough.
+3. If nothing matches, retry once with fewer or different words.
+4. Only if that fails, search the shared folder directly (read-only): list matching file names first, open the best one, and do not reuse unrelated matches.
+
+Do not begin with a recursive search over the whole shared workspace.
+
+Preference conflicts are shown only when they affect the task (for example, drafting a team deliverable). If the user asks about conflicts, run `context route --task drafting --conflicts`.
+
 ## Rules
 
 - One bundle at a time. If the task changes type, load only the difference.

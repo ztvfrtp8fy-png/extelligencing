@@ -15,6 +15,11 @@ First public beta candidate of Extelligencing. Licensed under Apache-2.0.
 - Validation tooling for live Kiro sessions: `init --trace`, `trace show`, `scripts/kiro-validation-setup.mjs`, `scripts/kiro-validation-check.mjs`, and a manual procedure (`docs/KIRO-VALIDATION.md`).
 - Automated tests, release hygiene check, documentation, contribution and security guidance.
 
+### Changed after the first live Kiro sessions
+- `context route --topic` now matches words in file names, titles and text (all words first, then any word, labeled partial) and returns only the best matching lines, so shared lookups do not need a recursive search of the whole shared workspace.
+- Preference conflicts are shown automatically only when they affect the task (drafting a team deliverable); `--conflicts` lists all on request.
+- Kernel and context-map policy: targeted retrieval first, direct search only as a fallback, no unrelated facts in answers, no unprompted conflict mentions.
+
 ### Not verified yet
 - Behavior inside a live Kiro, Codex or Claude Code session. See `docs/KIRO-VALIDATION.md` and `docs/RUNTIME-TEST-PROTOCOL.md`.
 - Any effect on productivity, cost or credit use.
