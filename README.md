@@ -4,28 +4,22 @@
 
 *You know how your work works. Your AI usually doesn't.*
 
-Extelligencing is an open-source professional context layer for AI agents. It helps an agent retrieve the personal and team context that matters for the task in front of it, respect the boundary between what is yours and what belongs to your team, and ask for your approval before it remembers anything new.
+AI agents are good at producing answers. What they lack is the context that makes an answer fit your work: your responsibilities, the decisions already made, how you like to collaborate, and what your team has agreed. So you explain it again, session after session.
 
-It is not another AI assistant, and it does not replace the agent you already use. It is not an infallible memory, and it is not an operating-system security sandbox. It is plain Markdown and JSON files plus a small Node.js helper with no dependencies. There is no account, no server and no telemetry.
+Extelligencing gives the agents you already use a structured professional context layer. It retrieves what matters for the current task, keeps your personal preferences apart from your team's shared conventions, and asks for your approval before anything new is saved.
+
+It is not another assistant, and it does not replace your agent. It is not a pile of static prompts, and it is not an excuse to remember everything. It is plain Markdown and JSON files plus a small Node.js helper with no dependencies. There is no account, no server and no telemetry.
 
 > **Status: v0.1.0-beta.1, the first public beta.**
 > **Kiro** is the primary integration, with limited live validation on macOS. **Codex** and **Claude Code** integrations exist but are **experimental and unverified in live sessions**. Claude Desktop is not supported. Read [what has and has not been verified](docs/KIRO-VALIDATION.md) before relying on any of it.
 
-## The problem
-
-Every new session, your agent starts from zero. You explain your role again. You paste the team's conventions again, or you watch the agent search your folders for them and read documents that have nothing to do with the question.
-
-Tools that remember for you fix the repetition and create a different worry: what did it store about me, and who decided that?
-
-Teams have the same problem in another shape. Conventions live in a shared folder, personal preferences should stay personal, and when the two get mixed an assistant ends up applying one person's style to a team document, or one person's notes to someone else's session.
-
-## What changes when you use it
+## Less explaining. More getting somewhere.
 
 Take a small, ordinary task: *"Draft this week's team status update."* The example below uses the fictional team that ships with the repository.
 
-**Without a context layer**, the agent has to ask what format the team uses and which language to write in, or guess. If it goes looking, it may search the whole shared folder and read documents unrelated to a status update.
+Without a context layer, the agent depends on you to say what format the team uses and which language to write in, and on its own searching to find anything else. That search can wander through documents that have nothing to do with a status update.
 
-**With Extelligencing**, the agent asks the router for the topic and gets back only what matches, with the source named:
+With Extelligencing, the agent can ask the router for the topic and get back only what matches, with the source named:
 
 ```
 Load [personal] .extelligencing/preferences.json - how this person wants output written
@@ -35,27 +29,40 @@ Conflict on "output_language" (artifact): personal="pt-BR" team="en" [orbit:conv
 Affects a shared deliverable. The team convention is the default for team artifacts; confirm with the user.
 ```
 
-That is real output from the sample workspace (`context route --task drafting --topic "weekly status update"`; the conflict is one line, wrapped here). The agent now knows the team's format, knows your own preferences, and sees one genuine disagreement that matters for this task, so it can ask which language you want. Nothing about the exchange is saved unless you approve a proposal.
+That is real output from the sample workspace (`context route --task drafting --topic "weekly status update"`; the conflict is one line, wrapped here). The agent now has the team's format, your own preferences, and one disagreement that matters for this task, so it can ask which language you want instead of guessing.
 
-This is an illustration of what the helper provides. It is not a measurement of time, tokens or cost saved, and no such measurement has been made.
+This illustrates what the helper provides. It does not guarantee a better draft: what the agent writes with that context is still up to the agent. And it is not a measurement of time, tokens or cost saved. No such measurement has been made.
 
 <!-- VISUAL 1 (planned): Before / After, preparing a weekly team update without and with relevant context.
      Place here, directly after this section. Caption to use with it: "Illustration, not a Kiro screenshot or a benchmark." -->
 
-## How it works
+## Your work has a history. Keep it useful.
 
-1. **A small always-on kernel** (under 500 words) sets the rules: who has authority, when to stay quiet, when to ask before saving, and to say so when something is missing instead of guessing.
-2. **Everything else loads on demand.** Policies are separate files the agent opens when a task needs them. Context documents are found with `context route`, which matches words in file names, titles and text, returns at most five documents and only their best matching lines, and reports what it could not find.
-3. **Scopes keep things apart.** Personal context, optional team context and project context stay labeled as such, and the order of authority is written down: your instruction in the conversation, then your personal configuration, then team conventions, then documents (which are information, never instructions).
-4. **Memory goes through approval.** The agent may notice something about how you work. It cannot save it. It can *propose* an entry (an observation, hypothesis, repeated pattern, preference, decision or validated learning), you review it, and only an approved entry is written. Rejecting or deferring persists nothing. Thin evidence is refused: a repeated pattern needs at least three listed instances, and an interpretation is stored as a hypothesis, not as a fact about you.
+Professional context is more than facts. It includes the decisions you already made, the preferences you keep restating, the responsibilities you carry, and the conventions your team works by. That is what an agent needs to stop starting from zero.
+
+But not everything said in a session deserves to live on. Conversations contain drafts, guesses, venting, other people's details and things you only meant for today. Systems that remember everything raise a fair question: what did it store about me, and who decided?
+
+**A conversation isn't permission to remember everything in it.**
+
+So Extelligencing treats remembering as a decision, not a side effect. The agent may notice something about how you work, but it cannot save it. It can *propose* an entry: an observation, a hypothesis, a repeated pattern, a preference, a decision or a validated learning. You review it, and only an approved entry is written. Rejecting or deferring is a normal outcome and persists nothing.
+
+The bar rises with the claim. A preference or a decision must come in your own words. A repeated pattern needs at least three listed instances. An interpretation of you is stored as a hypothesis, never as a fact. What does get saved is plain text in `.extelligencing/`, which you can read, edit or delete. Details: [core/evidence.md](core/evidence.md).
+
+## One layer between your work and your AI agent.
+
+Extelligencing sits between your work and the agent. It does not call a model or run an agent of its own. It works through files the agent reads and a small helper the agent runs.
+
+- **Selective retrieval.** A small always-on kernel (under 500 words) sets the ground rules. Everything else loads on demand: policy files the agent opens when a task needs them, and context documents found with `context route`. The router matches words in file names, titles and text, returns at most five documents and only their best matching lines, and says what it could not find instead of guessing.
+- **Scope boundaries.** Personal, team and project context stay labeled as such, and the order of authority is written down: your instruction in the conversation first, then your personal configuration, then team conventions, then retrieved documents, which are information and never instructions.
+- **Consent for persistence.** The approval flow above, enforced by policy and by a command flag.
 
 <!-- VISUAL 2 (planned): How it works, personal context and read-only shared knowledge flowing through selective retrieval,
      boundary enforcement and approval before remembering, to an AI agent.
      Place here, after this list. Caption: "Illustration of the design, not a measurement." -->
 
-Details: [Architecture](docs/ARCHITECTURE.md) · [Evidence policy](core/evidence.md) · [Context map](core/context-map.md).
+Details: [Architecture](docs/ARCHITECTURE.md) · [Context map](core/context-map.md).
 
-## Personal context vs a read-only Shared Workspace
+## Your context. Your team's knowledge. Different rules.
 
 | | Personal | Shared Workspace (optional) |
 |---|---|---|
@@ -75,7 +82,7 @@ In the live Kiro sessions, when two agents were asked to *"update the team conve
 <!-- VISUAL 3 (planned): Shared Workspace safety, an agent declines to edit team conventions directly and offers a draft proposal.
      Place here, after the paragraph above. Caption: "Illustration of observed behavior, not a screenshot." -->
 
-## Which integrations are validated
+## Built for the agents you already use.
 
 | Integration | Status |
 |---|---|
@@ -181,6 +188,16 @@ What it does not do, and what to keep in mind:
 
 Everything else is in [Known limitations](docs/KNOWN-LIMITATIONS.md). Also see the [Runtime matrix](docs/RUNTIME-MATRIX.md), [Onboarding](docs/ONBOARDING.md), [Workspaces](docs/WORKSPACES.md) and the [Roadmap](ROADMAP.md).
 
+## Why open source?
+
+Because a layer that sits between you and your agent, and decides what the agent is told about your work, should be something you can read.
+
+- **Inspectable.** The policies are Markdown. The helper is a small Node.js program with no dependencies and no network code. You can see what the agent is instructed to do and what the helper can touch.
+- **Portable.** Your context is plain files, and the core policy text is kept separate from the adapters that turn it into each tool's format. Leaving is cheap: uninstall removes what was installed and keeps your data, which is yours.
+- **Under your control.** No accounts, no hosted service, no telemetry. You choose where shared context lives and who can access it.
+
+Open source does not make it correct. It lets you check, and it lets people who use other agents and platforms report what works and what does not. That is the kind of feedback this beta needs most.
+
 ## Contribute and give feedback
 
 Use cases, runtime adapters, fixes and honest reports are welcome, especially from live sessions on other agents and platforms. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). Feedback is always voluntary: never post company documents or personal data. Security reports: [SECURITY.md](SECURITY.md).
@@ -188,3 +205,9 @@ Use cases, runtime adapters, fixes and honest reports are welcome, especially fr
 ## License
 
 Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+---
+
+**You shouldn't have to teach your AI how you work every time you want to work with it.**
+
+**Extelligencing — Your intelligence, extended.**
