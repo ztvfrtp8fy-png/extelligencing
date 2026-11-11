@@ -56,12 +56,15 @@ For each key that appears in both your `preferences.json` and the team's `conven
 
 A conflict is never hidden from you if you ask (`context route --task drafting --conflicts`). It is raised on its own only when it affects the work at hand: for drafting, conflicts on team deliverables (`artifact`). A personal `interaction` preference simply applies. Your explicit instruction always wins.
 
-## Isolation guarantees
+## What protects the shared folder
+
+These are behaviors of the helper and instructions to the assistant. They are **not** an operating-system sandbox, and they do not stop other programs, or an assistant that runs shell commands and ignores its instructions, from writing to the folder.
 
 - The helper opens shared files only for reading. Tests hash the shared folder before and after every operation.
-- Relative paths only. `..` traversal, absolute paths and symlinks that leave the shared folder are refused.
-- Shared text is data. Instructions inside it cannot change the kernel or grant permissions; `workspace check` warns about instruction-like text.
+- Relative paths only. `..` traversal, absolute paths and symbolic links that leave the shared folder are refused (a link swapped between the check and the read is not defended against).
+- Shared text is data. Instructions inside it cannot change the kernel or grant permissions; `workspace check` warns about instruction-like text with simple patterns.
 - Team content is not copied into personal files. Personal evidence is not written to shared locations. Exporting anything is a deliberate, separate action that does not exist in 0.1.
+- For a hard guarantee, use file permissions, a read-only mount or a disposable checkout.
 
 ## Not in 0.1
 

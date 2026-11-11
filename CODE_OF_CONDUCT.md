@@ -18,6 +18,6 @@ Extelligencing is for professionals with many backgrounds, roles and levels of e
 
 ## Enforcement
 
-Maintainers may edit or remove comments, issues and contributions, and may restrict participation, when behavior breaks these expectations. To report a concern, use GitHub's private reporting for this repository, or contact a maintainer through the channel listed in `SECURITY.md`. Reports are handled with discretion.
+Maintainers may edit or remove comments, issues and contributions, and may restrict participation, when behavior breaks these expectations. To report a concern privately, follow the steps in `SECURITY.md` (GitHub's private report form, or an issue asking for a private channel without details). Reports are handled with discretion.
 
 This code applies in project spaces and when representing the project in public.

@@ -202,3 +202,76 @@ test('init creates a missing target folder, and removes it again if the install 
   ok(target, ['init', '--runtime', 'kiro', '--yes']);
   assert.ok(has(target, '.extelligencing/onboarding.json'));
 });
+
+// ---------- symbolic links must never redirect writes or deletions outside the workspace ----------
+
+function listFilesRec(dir) {
+  const out = [];
+  const walk = (d) => {
+    for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+      const p = path.join(d, e.name);
+      e.isDirectory() ? walk(p) : out.push(path.relative(dir, p));
+    }
+  };
+  if (fs.existsSync(dir)) walk(dir);
+  return out;
+}
+
+test('init refuses a symlinked .kiro folder and writes nothing, inside or outside', () => {
+  const root = tmp();
+  const outside = tmp();
+  fs.symlinkSync(outside, path.join(root, '.kiro'));
+  const r = extelligencing(root, ['init', '--runtime', 'kiro', '--yes']);
+  assert.notEqual(r.code, 0);
+  assert.match(r.err, /resolve outside the target folder through a symbolic link/);
+  assert.match(r.err, /\.kiro\/steering\/extelligencing-kernel\.md/);
+  assert.deepEqual(listFilesRec(outside), []);
+  assert.ok(!has(root, '.extelligencing'), 'no partial install');
+  assert.notEqual(extelligencing(root, ['init', '--runtime', 'kiro']).code, 0, 'the preview refuses too');
+});
+
+test('init refuses a symlinked .extelligencing folder and a symlinked managed file', () => {
+  const a = tmp();
+  const outsideA = tmp();
+  fs.symlinkSync(outsideA, path.join(a, '.extelligencing'));
+  assert.notEqual(extelligencing(a, ['init', '--runtime', 'kiro', '--yes']).code, 0);
+  assert.deepEqual(listFilesRec(outsideA), []);
+
+  const b = tmp();
+  const target = path.join(tmp(), 'victim.md');
+  fs.writeFileSync(target, 'victim');
+  fs.mkdirSync(path.join(b, '.kiro', 'steering'), { recursive: true });
+  fs.symlinkSync(target, path.join(b, '.kiro', 'steering', 'extelligencing-kernel.md'));
+  assert.notEqual(extelligencing(b, ['init', '--runtime', 'kiro', '--yes']).code, 0);
+  assert.equal(fs.readFileSync(target, 'utf8'), 'victim');
+});
+
+test('init refuses a dangling symlink at a managed path', () => {
+  const root = tmp();
+  fs.mkdirSync(path.join(root, '.kiro', 'hooks'), { recursive: true });
+  fs.symlinkSync(path.join(tmp(), 'does-not-exist'), path.join(root, '.kiro', 'hooks', 'extelligencing-boot.json'));
+  const r = extelligencing(root, ['init', '--runtime', 'kiro', '--yes']);
+  assert.notEqual(r.code, 0);
+  assert.match(r.err, /extelligencing-boot\.json/);
+});
+
+test('symlinks that stay inside the workspace are still allowed', () => {
+  const root = tmp();
+  fs.mkdirSync(path.join(root, 'real-kiro'));
+  fs.symlinkSync(path.join(root, 'real-kiro'), path.join(root, '.kiro'));
+  assert.equal(extelligencing(root, ['init', '--runtime', 'kiro', '--yes']).code, 0);
+  assert.ok(has(root, 'real-kiro/steering/extelligencing-kernel.md'));
+});
+
+test('uninstall does not delete through a symlink that now points outside', () => {
+  const root = tmp();
+  install(root);
+  const outside = tmp();
+  fs.cpSync(path.join(root, '.kiro'), path.join(outside, 'copy'), { recursive: true });
+  fs.rmSync(path.join(root, '.kiro'), { recursive: true });
+  fs.symlinkSync(path.join(outside, 'copy'), path.join(root, '.kiro'));
+  const before = listFilesRec(outside).sort();
+  const out = ok(root, ['uninstall', '--yes']);
+  assert.match(out, /kept\s+\.kiro\/steering\/extelligencing-kernel\.md.*symbolic link/);
+  assert.deepEqual(listFilesRec(outside).sort(), before, 'files outside the workspace were not touched');
+});

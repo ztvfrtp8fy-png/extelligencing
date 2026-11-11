@@ -1,13 +1,17 @@
 {
   "name": "extelligencing",
   "version": "0.1.0-beta.1",
-  "description": "Your intelligence, extended. Personal by design. Connected by choice. An open-source framework for proportional, context-aware work with an AI assistant.",
+  "description": "Your intelligence, extended. Personal by design. Connected by choice. An open-source, local-first framework for proportional, context-aware work with an AI assistant.",
   "type": "module",
   "license": "Apache-2.0",
+  "repository": { "type": "git", "url": "git+https://github.com/ztvfrtp8fy-png/extelligencing.git" },
+  "homepage": "https://github.com/ztvfrtp8fy-png/extelligencing#readme",
+  "bugs": { "url": "https://github.com/ztvfrtp8fy-png/extelligencing/issues" },
+  "keywords": ["ai-assistant", "context", "kiro", "agents", "local-first", "markdown"],
   "bin": { "extelligencing": "bin/extelligencing.mjs" },
   "engines": { "node": ">=18" },
   "scripts": {
-    "test": "node --test tests/",
+    "test": "node --test tests/*.test.mjs",
     "check:release": "node scripts/release-check.mjs"
   },
   "files": ["bin", "lib", "core", "docs", "examples", "extensions", "NOTICE"],
