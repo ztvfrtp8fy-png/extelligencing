@@ -1,0 +1,11 @@
+{
+  "roles": ["Squad lead", "Engineering manager"],
+  "responsibilities": ["Team delivery", "Cross-team alignment", "Hiring"],
+  "goals": ["Make team conventions easier to follow"],
+  "friction": ["Too many context switches between planning and technical review"],
+  "runtime": "kiro",
+  "style": "guided",
+  "language": "pt-BR",
+  "outputLanguage": "pt-BR",
+  "sharedWorkspace": { "name": "orbit", "path": "__SHARED_PATH__" }
+}

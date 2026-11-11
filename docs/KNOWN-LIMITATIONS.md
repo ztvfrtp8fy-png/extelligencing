@@ -1,0 +1,16 @@
+# Known Limitations (0.1 beta)
+
+- **No live-runtime verification yet.** Generated files and the helper are tested automatically. Behavior inside Kiro, Codex and Claude Code sessions is not verified. See the [matrix](RUNTIME-MATRIX.md).
+- **The Kiro hook is unconfirmed in real sessions.** Kiro's documentation says command hooks run in the project root, and the hook command is a relative path, so it fails (silently, from the model's point of view) if Kiro uses another directory. Stdout injection and trusted-workspace behavior also need confirmation. Fallback: `#extelligencing-onboarding`. See [KIRO-VALIDATION.md](KIRO-VALIDATION.md).
+- **Approval is enforced by a flag and by policy, not by a sandbox.** See [SECURITY.md](../SECURITY.md).
+- **Requires Node.js 18+** on the machine for the helper. Without it, the policies still load but the hook, routing and evidence commands do not run.
+- **One workspace per install.** Extelligencing lives in the folder you install it into. There is no user-level (global) install yet. A dedicated personal workspace folder is the simplest setup; project repositories can be opened alongside it.
+- **Selection is simple.** Shared documents are chosen by folder, file name and title. No semantic search. Capped at 5 per request.
+- **Conflict detection is structured only.** It compares keys in `preferences.json` and `conventions.json`. It does not find disagreements in prose.
+- **Prompt-injection and secret checks are heuristics.**
+- **Shared workspaces can be stale.** Extelligencing reads the local copy; it does not fetch or verify freshness.
+- **No proposal flow for shared context.** Changes to team content are made by the team through its normal process.
+- **Efficiency is unmeasured.** No claim is made about cost, credits, latency or quality improvements.
+- **Evidence proposals are validated mechanically** (instance counts, required fields, wording and secret checks). Judging whether instances are truly independent is left to the person.
+- **English-first core text.** Assistants can converse in your language, but the policy files are English.
+- **The name "Extelligencing" has not had a trademark search.** No conflicting npm package was found.

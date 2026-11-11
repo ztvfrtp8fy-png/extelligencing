@@ -1,0 +1,9 @@
+{
+  "roles": ["Software engineer", "Occasional on-call responder"],
+  "responsibilities": ["Scheduling service features", "Code review", "Incident follow-ups"],
+  "goals": ["Raise test coverage on the scheduling service"],
+  "friction": ["Re-explaining service boundaries to the assistant"],
+  "runtime": "kiro",
+  "style": "direct",
+  "language": "en"
+}

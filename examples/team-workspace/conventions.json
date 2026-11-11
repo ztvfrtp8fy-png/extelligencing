@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "conventions": {
+    "output_language": { "value": "en", "scope": "artifact", "doc": "conventions/communication.md" },
+    "style": { "value": "guided", "scope": "interaction", "doc": "conventions/communication.md" },
+    "update_format": { "value": "bullets", "scope": "artifact", "doc": "conventions/status-updates.md" }
+  }
+}

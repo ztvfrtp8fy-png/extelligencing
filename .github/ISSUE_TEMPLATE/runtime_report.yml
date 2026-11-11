@@ -1,0 +1,20 @@
+name: Runtime report
+description: Report what you verified (or broke) in a live AI runtime
+labels: ["runtime"]
+body:
+  - type: input
+    id: runtime
+    attributes:
+      label: Runtime and version
+    validations:
+      required: true
+  - type: textarea
+    id: protocol
+    attributes:
+      label: Steps from docs/RUNTIME-TEST-PROTOCOL.md you ran, with pass/fail
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (synthetic data only)

@@ -1,0 +1,30 @@
+name: Bug report
+description: Something in Extelligencing does not work as documented
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not paste personal data, company documents or credentials. Use synthetic examples.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+  - type: input
+    id: runtime
+    attributes:
+      label: AI runtime and version (optional)
+  - type: input
+    id: version
+    attributes:
+      label: Extelligencing version (`node bin/extelligencing.mjs version`)
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version and OS (optional)

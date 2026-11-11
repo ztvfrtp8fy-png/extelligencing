@@ -1,0 +1,40 @@
+name: Experience feedback
+description: Share how Extelligencing worked (or did not) in your real work
+labels: ["friction"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Everything here is optional. Never include company documents, customer data or personal information.
+  - type: input
+    id: role
+    attributes:
+      label: Professional role (optional)
+  - type: input
+    id: runtime
+    attributes:
+      label: AI runtime (optional)
+  - type: textarea
+    id: setup
+    attributes:
+      label: Setup experience
+  - type: textarea
+    id: helpful
+    attributes:
+      label: What helped
+  - type: textarea
+    id: friction
+    attributes:
+      label: Friction, unwanted intervention or context problems
+  - type: textarea
+    id: cost
+    attributes:
+      label: Credit, token or latency observations (only if you measured them; say how)
+  - type: textarea
+    id: shared
+    attributes:
+      label: Shared-workspace needs
+  - type: textarea
+    id: ideas
+    attributes:
+      label: Proposed improvements

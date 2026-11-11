@@ -1,0 +1,15 @@
+{
+  "name": "extelligencing",
+  "version": "0.1.0-beta.1",
+  "description": "Your intelligence, extended. Personal by design. Connected by choice. An open-source framework for proportional, context-aware work with an AI assistant.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "bin": { "extelligencing": "bin/extelligencing.mjs" },
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node --test tests/",
+    "check:release": "node scripts/release-check.mjs"
+  },
+  "files": ["bin", "lib", "core", "docs", "examples", "extensions", "NOTICE"],
+  "private": true
+}

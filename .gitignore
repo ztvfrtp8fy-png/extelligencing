@@ -1,0 +1,13 @@
+node_modules/
+.DS_Store
+*.log
+*.tmp-*
+.env
+.env.*
+*.pem
+# Local Extelligencing state must never be committed to the framework repository.
+.extelligencing/
+.kiro/
+# Private denylist used by release checks, if kept next to the repo by mistake.
+.release-denylist
+*.extelligencing-new

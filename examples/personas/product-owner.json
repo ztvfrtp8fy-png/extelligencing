@@ -1,0 +1,10 @@
+{
+  "roles": ["Product Owner"],
+  "responsibilities": ["Backlog and prioritization for the scheduling area", "Stakeholder updates"],
+  "goals": ["Reduce no-shows this quarter"],
+  "friction": ["Rewriting the same status update every week"],
+  "runtime": "kiro",
+  "style": "direct",
+  "language": "en",
+  "outputLanguage": "en"
+}
